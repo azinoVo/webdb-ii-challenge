@@ -63,22 +63,40 @@ router.put('/:id', (req, res) => {
     .then(count => {
         if (count > 0) {
             // return the count or the newly updated from database
-            res.status(200).json({message: "Update Successful!"})
+            db('zoos')
+            .where({id: req.params.id})
+            .first()
+            .then(animal => {
+                res.status(200).json({animal})
+            })
         } else {
             res.status(500).json({message: "Zoo Animal not found!"})
         }
     })
-
-
+    .catch(err => {
+        res.status(500).json(err);
+    })
 
 });
 
 
 //---------------------------------------------------------------------------------//
 
-router.delete('/', (req, res) => {
+router.delete('/:id', (req, res) => {
     
-
+    db('zoos')
+    .where({id: req.params.id})
+    .del()
+    .then(count => {
+        if (count > 0) {
+            res.status(200).json({message: "Destruction Imminent."})
+        } else {
+            res.status(404).json({message: "Animal not found!"})
+        }
+    })
+    .catch(err => {
+        res.status(500).json(err);
+    })
 });
 
 //---------------------------------------------------------------------------------//
